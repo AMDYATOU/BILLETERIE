@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse,get_list_or_404,get_object_or_404,redirect
+from django.shortcuts import render,HttpResponse,get_list_or_404,get_object_or_404,redirect,HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
 from . import forms,models
@@ -7,6 +7,7 @@ from dashboard.models import Compagnie,Ville
 from companyman.models import Ligne,InfoLigne,Bus
 from .functions import code
 from django.db.models.query import QuerySet
+
 
 lecode=code(8)
 ville= Ville.objects.all()
@@ -46,43 +47,14 @@ def infoligne_view(request,ln_id):
              }
     return render(request,'infoligne.html',context)
 
-
-# def reservation2_view(request,res_id):
-#     if request.method == 'POST':
-#         formulaire = forms.BilletForm(request.POST)
-#         context={
-#             'res':get_object_or_404(InfoLigne, pk=res_id),
-#             'inf':infln.get(pk=res_id),
-#             'form1':formulaire,
-#             'lecode':lecode,
-#             'prix':InfoLigne.objects.filter(id=res_id).values_list('prix',flat=True),
-#         }
-#         if formulaire.is_valid():
-#             donnees = formulaire.cleaned_data
-#             montant= models.Billet(place=donnees['place'],prix=context['prix'])
-#             billet = models.Billet.objects.create(
-#                 nom_clt=donnees['nom_clt'], 
-#                 prenom_clt=donnees['prenom_clt'],
-#                 email_clt=donnees['email_clt'],
-#                 telephone_clt=donnees['telephone_clt'],
-#                 place=donnees['place'],
-#                 code_billet=lecode,
-#                 infoligne_id=context['inf'],
-#                 prix=context['prix'],
-#                 montant_billet=montant.produit,
-#             )
-#             billet.save()
-#             formulaire = forms.BilletForm()
-#     else:
-#         formulaire = forms.BilletForm()
-
-#     return render(request, 'reservation_etape2.html',{'form1':formulaire})
-
 def billet_detail_view(request, billet_id):
     billet = get_object_or_404(models.Billet, pk=billet_id)
+    infoln = get_object_or_404(InfoLigne, pk=billet.infoligne_id.pk)
     context = {
         'billet': billet,
-    }
+        'infoln' : infoln,
+        'ligne' : ligne,
+        }
     return render(request, 'billet_detail.html', context)
 
 def reservation2_view(request,res_id):
@@ -110,8 +82,12 @@ def reservation2_view(request,res_id):
                 montant_billet=montant.produit,
             )
             billet.save()
-            return redirect(reverse('billet_detail_view', args=[billet.pk]))
+            return redirect(reverse('client:billet_detail_view',args=[billet.pk]))
     else:
         formulaire = forms.BilletForm()
-
+    context={
+            'res':get_object_or_404(InfoLigne, pk=res_id),
+            'inf':infln.get(pk=res_id),
+            'form1':formulaire,
+        }
     return render(request, 'reservation_etape2.html', context)

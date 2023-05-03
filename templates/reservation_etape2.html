@@ -11,7 +11,7 @@
             <div class="contact100-pic js-tilt" data-tilt>
                 <img src="{% static 'images/modele-formulaire-inscription.avif' %}" alt="IMG">
             </div>
-            <form class="contact100-form validate-form" method="post" action="#">
+            <form class="contact100-form validate-form" method="post" action="">
                 
                 <span class="contact100-form-title">
                     <b>Faites votre réservation</b> 
@@ -31,10 +31,6 @@
                 </div>
                 <div class="wrap-input100 validate-input" data-validate="Un numéro de telephone valide est requi">
                     {{ form1.telephone_clt }}
-                    <span class="focus-input100"></span>
-                </div>
-                <div class="wrap-input100 validate-input">
-                    {{ lecode }}
                     <span class="focus-input100"></span>
                 </div>
                 <div class="wrap-input100 validate-input" data-validate="Vous devez selectionner le nombre de place">
